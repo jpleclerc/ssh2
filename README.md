@@ -900,6 +900,9 @@ You can find more examples in the `examples` directory of this repository.
               key: ...,
               // `passphrase` only required for encrypted keys
               passphrase: ...,
+              // Optional OpenSSH certificate (e.g. contents of `id_ed25519-cert.pub`)
+              // for the key
+              certificate: ...,
             }
             ```
 
@@ -913,6 +916,9 @@ You can find more examples in the `examples` directory of this repository.
               key: ...,
               // `passphrase` only required for encrypted keys
               passphrase: ...,
+              // Optional OpenSSH certificate (e.g. contents of `id_ed25519-cert.pub`)
+              // for the key
+              certificate: ...,
             }
             ```
 
@@ -938,6 +944,8 @@ You can find more examples in the `examples` directory of this repository.
               },
             }
             ```
+
+    * **certificate** - _mixed_ - _Buffer_ or _string_ that contains an OpenSSH certificate (e.g. the contents of `id_ed25519-cert.pub`) for **privateKey**. The certificate is sent as the public key for key-based or hostbased user authentication. Supported certificate types are `ssh-rsa-cert-v01@openssh.com`, `ssh-dss-cert-v01@openssh.com`, `ssh-ed25519-cert-v01@openssh.com`, and `ecdsa-sha2-nistp*-cert-v01@openssh.com`. Certificates stored in an SSH agent are used automatically for agent-based user authentication. **Default:** (none)
 
     * **debug** - _function_ - Set this to a function that receives a single string argument to get detailed (local) debug information. **Default:** (none)
 
@@ -1110,9 +1118,9 @@ You can find more examples in the `examples` directory of this repository.
 
         * **key** - _object_ - Contains information about the public key sent by the client:
 
-            * **algo** - _string_ - The name of the key algorithm (e.g. `ssh-rsa`).
+            * **algo** - _string_ - The name of the key algorithm (e.g. `ssh-rsa`). For OpenSSH certificates this is the certificate type (e.g. `ssh-ed25519-cert-v01@openssh.com`).
 
-            * **data** - _Buffer_ - The actual key data.
+            * **data** - _Buffer_ - The actual key data. For OpenSSH certificates this is the full certificate blob. `parseKey()` can parse it and its `verify()` uses the embedded public key, but validating the certificate itself (CA signature, principals, validity period, critical options) is left to the application.
 
         * **localHostname** - _string_ - The local hostname provided by the client.
 
@@ -1140,9 +1148,9 @@ You can find more examples in the `examples` directory of this repository.
 
         * **key** - _object_ - Contains information about the public key sent by the client:
 
-            * **algo** - _string_ - The name of the key algorithm (e.g. `ssh-rsa`).
+            * **algo** - _string_ - The name of the key algorithm (e.g. `ssh-rsa`). For OpenSSH certificates this is the certificate type (e.g. `ssh-ed25519-cert-v01@openssh.com`).
 
-            * **data** - _Buffer_ - The actual key data.
+            * **data** - _Buffer_ - The actual key data. For OpenSSH certificates this is the full certificate blob. `parseKey()` can parse it and its `verify()` uses the embedded public key, but validating the certificate itself (CA signature, principals, validity period, critical options) is left to the application.
 
         * **signature** - _mixed_ - If the value is `undefined`, the client is only checking the validity of the `key`. If the value is a _Buffer_, then this contains a signature to be verified that is passed to (along with the blob) `key.verify()` where `key` is a public key parsed with [`parseKey()`](#utilities).
 
